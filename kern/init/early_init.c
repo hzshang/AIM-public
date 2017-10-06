@@ -23,13 +23,37 @@
 #include <sys/types.h>
 #include <aim/init.h>
 
+//copy from http://arjunsreedharan.org/post/82710718100/kernel-101-lets-write-a-kernel
+void cleanScreen(){
+	const char *str = "Hello World!";
+	char *vidptr = (char*)0xb8000;
+	unsigned int i = 0;
+	unsigned int j = 0;
+
+	/* loops clears the screen*/
+	while(j < 80 * 25 * 2) {
+		vidptr[j] = ' ';
+		vidptr[j+1] = 0x07; 		
+		j = j + 2;
+	}
+	j = 0;
+
+	/* writes the string to video memory */
+	while(str[j] != '\0') {
+		vidptr[i] = str[j];
+		vidptr[i+1] = 0x07;
+		++j;
+		i = i + 2;
+	}
+	return;
+}
+
+
 __noreturn
 void master_early_init(void)
 {
 	arch_early_init();
-	goto panic;
-
-panic:
-	while (1);
+	cleanScreen();
+	while(1);
 }
 

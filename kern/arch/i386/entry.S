@@ -23,5 +23,23 @@
 .text
 
 .globl _start
-_start:
 
+_start:
+	/* same as bootloader */
+	cli
+	cld
+	/* Set up the stack pointer */
+	mov	$kstack_top, %esp
+	xor	%eax, %eax
+	push	%eax		// eip=0
+	push	%eax		// ebp=0
+	mov	%esp, %ebp
+
+	leal bss_start,%eax
+.clear:
+	movl $0x0, (%eax)
+	incl %eax
+	testl $bss_end, %eax
+	jnz .clear
+	/* and there we go */
+	call	master_early_init

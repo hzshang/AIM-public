@@ -29,3 +29,25 @@
 
 ENTRY(_start)
 
+SECTIONS
+{
+	. = KERN_START;
+
+	.text : {
+		*(.text);
+	}
+
+	.data : {
+		*(.data);
+	}
+
+	bss_start = .;
+	.bss : {
+		*(.bss);
+		. = ALIGN(4096);
+		PROVIDE(kstack = .);
+		. += KSTACKSIZE;
+		PROVIDE(kstack_top = .);
+	}
+	bss_end = .;
+}

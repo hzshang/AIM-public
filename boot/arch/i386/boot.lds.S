@@ -26,6 +26,36 @@
  * Using the C preprocessor, we allow includes and macro expansion in this
  * linker script.
  */
-
 ENTRY(_start)
+
+MEMORY
+{
+    MBR (rwx) :
+        ORIGIN = 0x7C00,
+        LENGTH = 454
+
+    BSS (rw) :
+        ORIGIN = 0x8100,
+        LENGTH = 77200
+}
+SECTIONS
+{
+    .text : {
+        PROVIDE(mbr = .);
+        *(.entry);
+        *(.text);
+        *(.rodata);
+        *(.data);
+    } > MBR
+
+    .bss : {
+        PROVIDE(bss_start = .);
+        *(.bss);
+        PROVIDE(bss_end = .);
+    } > BSS
+
+    /DISCARD/ : {
+        *(.eh_frame);
+    }
+}
 
