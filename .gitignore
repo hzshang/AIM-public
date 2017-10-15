@@ -6,6 +6,7 @@
 *.elf
 *.bin
 
+
 # Precompiled Headers
 #*.gch
 #*.pch
